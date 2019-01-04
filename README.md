@@ -11,25 +11,27 @@ It can be configured to run periodically using CloudWatch events.
 
 ## Quick start
 
-1. Create an AWS lambda function:
+1. Run `bin/makezip.sh` to create a zip file of this code.
+2. Create an AWS lambda function:
     - Runtime: Node.js 6.10
-    - Code entry type: Upload a .ZIP file
-    ([pgdump-aws-lambda.zip](https://github.com/jameshy/pgdump-aws-lambda/releases/download/v1.1.5/pgdump-aws-lambda.zip))
+    - Code entry type: Upload the .ZIP file you created in step #1
     - Configuration -> Advanced Settings
         - Timeout = 5 minutes
         - Select a VPC and security group (must be suitable for connecting to the target database server)
-2. Create a CloudWatch rule:
+        - Make sure the lambda has permissions to access both the database and s3 bucket
+3. Create a CloudWatch rule:
     - Event Source: Fixed rate of 1 hour
-    - Targets: Lambda Function (the one created in step #1)
-    - Configure input -> Constant (JSON text) and paste your config, e.g.:
+    - Targets: Lambda Function (the one created in step #2)
+    - Configure your environment variables, e.g.:
     ```json
     {
-        "PGDATABASE": "oxandcart",
-        "PGUSER": "staging",
-        "PGPASSWORD": "uBXKFecSKu7hyNu4",
-        "PGHOST": "database.com",
-        "S3_BUCKET" : "my-db-backups",
-        "ROOT": "hourly-backups"
+        "PGDATABASE": "required; name of database",
+        "PGUSER": "required; username for database",
+        "PGPASSWORD": "required; user password for database",
+        "PGHOST": "required; database host",
+        "S3_BUCKET" : "required; name of bucket to upload pg dump",
+        "S3_ROOT_DIRECTORY": "optional; directory in s3 where dumps will be uploaded",
+        "S3_REGION" : "optional; default: 'us-east-1'"
     }
     ```
 
