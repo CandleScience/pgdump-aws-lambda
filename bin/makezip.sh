@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
 
-SCRIPT=`readlink -f $0`
-SCRIPTPATH=`dirname $SCRIPT`
-PROJECTROOT=`readlink -f $SCRIPTPATH/..`
+BIN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+PROJECTROOT="$BIN_DIR/.."
 FILENAME="pgdump-aws-lambda.zip"
 
 command_exists () {
